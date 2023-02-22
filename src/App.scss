@@ -1,0 +1,66 @@
+body {
+  background: url('../public/imgs/background_tile.png');
+  background-size: cover;
+  background-position: center;
+  margin: 0;
+  color: #fff;
+  font-family: 'Lato', sans-serif;
+  text-align: center;
+  justify-content: center;
+  min-width: 850px;
+}
+
+
+.table-containers{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  margin: 1.5rem 0;
+
+  .players{
+    margin-top: 20px;
+    display: flex;
+    flex-direction: row;
+    overflow: auto;
+  }
+}
+
+
+
+.table-card-containers {
+  border: 0.2rem solid;
+  border-radius: 1rem;
+  margin: 0 1rem;
+  min-height: 10.8rem;
+  min-width: 12rem;
+  padding: 0.3rem 0.5rem;
+}
+
+.table-card-containers:nth-child(2) {
+  min-width: 18rem;
+}
+
+button {
+  color: white;
+  font-size: 0.8rem;
+  background: none;
+  border: 0.2rem solid white;
+  border-radius: 1rem;
+  padding: 0.3rem;
+  margin: 0.3rem;
+  min-width: 12rem;
+  outline: none;
+  cursor: pointer;
+}
+
+button.active-button {
+  color: rgb(43, 83, 54);
+  background: white;  
+}
+
+img {
+  width: 5rem;
+  height: auto;
+  margin: 0.4rem; 
+  cursor: pointer;
+}

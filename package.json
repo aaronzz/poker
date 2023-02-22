@@ -23,6 +23,13 @@
       "react-app/jest"
     ]
   },
+  "jest": {
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      "index\\.js",
+      "reportWebVitals\\.js"
+    ]
+  },
   "browserslist": {
     "production": [
       ">0.2%",
@@ -34,5 +41,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "sass": "^1.58.3"
   }
 }
