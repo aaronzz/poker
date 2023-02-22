@@ -26,3 +26,9 @@ tests are located in __test__ folder
 
 ### `npm test -- --coverage --watchAll`
 To get the code coverage test 
+
+
+### Deployment
+
+This project is deployed on AWS and can be access from:
+https://master.d1gpp3h7uj6yz6.amplifyapp.com/
