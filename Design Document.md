@@ -77,3 +77,8 @@ start with create-react-app
 3. create cards container which controls and display all cards in a deck 
 4. create TableConatiner which generically controls card distribution to players and community 
 5. create RankUtil holds the calculation logic to rank a player ( this will be a AWS Lambda in the future)
+
+
+## Test plan
+
+Jest Unit test to have most functionality covered , especically the core calculation Unit
