@@ -104,6 +104,10 @@ const App = () => {
       return false;
     }
 
+    if(players.length === 0){
+      return false;
+    }
+
     for(let i = 0; i < players.length; i++){
       if(players[i].hand.length !== 2){
         return false;
@@ -127,6 +131,7 @@ const App = () => {
             name="Table"
             area="table"
             cards={table}
+            className={'tableCards'}
             removeCard={removeCard}
             selected={selected}
             setSelected={setSelected}
@@ -136,6 +141,7 @@ const App = () => {
         {players.map((player, index) =>
               <TableContainer
               key={index}
+              className={'playerCards'}
               name={player.name}
               area={player.name}
               cards={player.hand}

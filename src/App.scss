@@ -16,6 +16,7 @@ body {
   flex-direction: column;
   justify-content: space-evenly;
   margin: 1.5rem 0;
+  align-items: center;
 
   .players{
     margin-top: 20px;
@@ -33,12 +34,10 @@ body {
   margin: 0 1rem;
   min-height: 10.8rem;
   min-width: 12rem;
-  padding: 0.3rem 0.5rem;
+  padding: 0.3rem 0.5rem;  
 }
 
-.table-card-containers:nth-child(2) {
-  min-width: 18rem;
-}
+
 
 button {
   color: white;

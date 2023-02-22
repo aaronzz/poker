@@ -8,7 +8,8 @@ const TableContainer = ({
   removeCard,
   selected,
   setSelected,
-  limit
+  limit,
+  className
 }) => {
   const buttonClass = selected.area === area ? 'active-button' : '';
 
@@ -20,7 +21,7 @@ const TableContainer = ({
       >
         {`${name} Cards`}
       </button>
-      <div>
+      <div className={className}>
         {cards.map((card) => (
           <Card
             key={card.name}
