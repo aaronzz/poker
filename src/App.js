@@ -122,6 +122,29 @@ const App = () => {
     setPlayers([]);
   }
 
+  function shuffledCardsAndDeal() {
+    const shuffled = [...availableCards()];
+  
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    const tableCopy = [...table];
+    for(let i = tableCopy.length; i < 5; i++){
+      tableCopy.push(shuffled.pop());
+    }
+    const playerCopy = [...players];
+    for(let j = 0; j < playerCopy.length; j++){
+      let player = playerCopy[j];
+      for(let k = player.hand.length; k < 2; k++ ){
+        player.hand.push(shuffled.pop());
+      }
+    }
+    setTable(tableCopy);
+    setPlayers(playerCopy);
+    
+  }
+
   return (
     <div>
       <Header />
@@ -180,6 +203,12 @@ const App = () => {
           onClick={() => {resetTable()}}
           >
             {`Reset Table`}
+          </button>
+          <button
+          className={`dealCard`}
+          onClick={() => {shuffledCardsAndDeal()}}
+          >
+            {`Auto Deal`}
           </button>
         </div>
       <Footer/>
