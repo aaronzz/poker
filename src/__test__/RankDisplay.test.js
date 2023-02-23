@@ -1,19 +1,37 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { render, fireEvent, getByTestId } from '@testing-library/react';
 import RankDisplay from '../components/RankDisplay';
 describe('RankDisplay', () => {
-  it('should render the rank result for players', () => {
-    const players = [
-      { name: 'Player1', hand: [{ code: 'AS' }, { code: 'KS' }] },
-      { name: 'Player2', hand: [{ code: 'AD' }, { code: 'KD' }] },
-    ];
-    const communityCards = [{ code: '10C' }, { code: 'JH' }, { code: 'QD' }, { code: 'KC' }, { code: 'AH' }];
-    const calculateRank = (input) => ['Player2 wins!', 'Player1 loses.'];
+  const players = [
+    { name: 'player1', hand: [{ code: 'AC' }, { code: 'KS' }] },
+    { name: 'player2', hand: [{ code: 'KH' }, { code: 'QC' }] }
+  ];
+  const communityCards = [{ code: 'JS' }, { code: '10C' }, { code: '2H' }, { code: '3S' }, { code: '4D' }];
+  const calculateRank = jest.fn().mockReturnValue(['player1 wins with high card: Ace']);
+  let container, button, dialog;
 
-    const { getByText } = render(<RankDisplay players={players} calculateRank={calculateRank} communityCards={communityCards} />);
-
-    expect(getByText('Rank Result')).toBeInTheDocument();
-    expect(getByText('Player2 wins!')).toBeInTheDocument();
-    expect(getByText('Player1 loses.')).toBeInTheDocument();
+  beforeEach(() => {
+    ({ container } = render(<RankDisplay players={players} communityCards={communityCards} calculateRank={calculateRank} />));
+    button = container.querySelector('button');
   });
+
+  it('should not display the dialog by default', () => {
+    dialog = container.querySelector('div[role="dialog"]');
+    expect(dialog).toBeNull();
+  });
+
+  it('should open the dialog when the button is clicked', () => {
+    fireEvent.click(button);
+    dialog = container.querySelector('div[role="dialog"]');
+  });
+
+  it('should call calculateRank with the correct arguments', () => {
+    fireEvent.click(button);
+    expect(calculateRank).toHaveBeenCalledWith({
+      Community: ['JS', '10C', '2H', '3S', '4D'],
+      player1: ['AC', 'KS'],
+      player2: ['KH', 'QC']
+    });
+  });
+
 });

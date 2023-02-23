@@ -14,7 +14,6 @@ const App = () => {
   const [table, setTable] = useState([]);
   const [selected, setSelected] = useState({ area: "", limit: 0 });
   const [name, setName] = useState('');
-  const [showResult, setShowResult] = useState(false);
 
   useEffect(() => {
     if(containerRef && containerRef.current){
@@ -89,14 +88,6 @@ const App = () => {
   const handleNameChange = (event) => {
     setName(event.target.value);
   };
-
-  const toggleResult = () =>{
-    if(!validateSelection()){
-      alert('please set table to have 5 cards and have each player have at least 2 cards');
-    }else{
-      setShowResult(!showResult);
-    }
-  }
 
   const validateSelection =() =>{
     //need to check if community has 5 cards and each player has at least 2 cards to do calculation
@@ -176,12 +167,12 @@ const App = () => {
           )}
          </div>
         </div>
-        {showResult &&
         <RankDisplay
           players={players}
           calculateRank={rankPlayers}
           communityCards={table}
-        />}
+          isEnabled={validateSelection()}
+        />
         <div className='utlities'  ref={containerRef}>
         User Name:
         <input type="text" value={name} onChange={handleNameChange} data-testid={'userNameInput'} />
@@ -191,12 +182,6 @@ const App = () => {
           data-testid={'addUserButtonTest'}
           >
             {`Add User`}
-          </button>
-          <button
-          className={`calculateRank`}
-          onClick={() => {toggleResult()}}
-          >
-            {`Calculate Result`}
           </button>
           <button
           className={`resetTable`}

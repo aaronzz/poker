@@ -43,6 +43,11 @@
     ]
   },
   "devDependencies": {
+    "@emotion/react": "^11.10.6",
+    "@emotion/styled": "^11.10.6",
+    "@mui/material": "^5.11.10",
+    "install": "^0.13.0",
+    "npm": "^9.5.1",
     "sass": "^1.58.3"
   }
 }

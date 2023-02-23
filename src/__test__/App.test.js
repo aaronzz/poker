@@ -40,7 +40,7 @@ describe('App', () => {
 
   it('should not calculate result if the selected cards are not valid', () => {
     render(<App />);
-    const calculateRankButton = screen.getByText(/Calculate Result/i);
+    const calculateRankButton = screen.getByText(/CALCULATE WINNER/i);
     fireEvent.click(calculateRankButton);
     expect(screen.queryByText(/Rank Result/i)).not.toBeInTheDocument();
   });
@@ -63,7 +63,7 @@ describe('App', () => {
     fireEvent.click(screen.getByText('Add User'));
     fireEvent.change(nameInput, { target: { value: 'Mary' } });
     fireEvent.click(screen.getByText('Add User'));
-    const calculateRankButton = screen.getByText(/Calculate Result/i);
+    const calculateRankButton = screen.getByText(/CALCULATE WINNER/i);
     fireEvent.click(calculateRankButton);
   });
 });
