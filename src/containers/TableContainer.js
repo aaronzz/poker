@@ -1,5 +1,6 @@
 import React from 'react';
 import Card from '../components/Card';
+import WinRateDisplay from '../components/WinRateDisplay';
 
 const TableContainer = ({
   name,
@@ -9,7 +10,10 @@ const TableContainer = ({
   selected,
   setSelected,
   limit,
-  className
+  className,
+  communityCards,
+  totalPlayers,
+  showWinRate
 }) => {
   const buttonClass = selected.area === area ? 'active-button' : '';
 
@@ -30,6 +34,13 @@ const TableContainer = ({
           />
         ))}
       </div>
+      {showWinRate && (
+        <WinRateDisplay 
+          playerHand={cards}
+          communityCards={communityCards || []}
+          totalPlayers={totalPlayers || 2}
+        />
+      )}
     </div>
   );
 };

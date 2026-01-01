@@ -3,6 +3,7 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import CardsContainer from './containers/CardsContainer';
 import TableContainer from './containers/TableContainer';
+import CommunityCardsDisplay from './components/CommunityCardsDisplay';
 import RankDisplay from './components/RankDisplay';
 import {rankPlayers} from './helpers/RankUtil';
 import cards from './helpers/cardData';
@@ -14,6 +15,7 @@ const App = () => {
   const [table, setTable] = useState([]);
   const [selected, setSelected] = useState({ area: "", limit: 0 });
   const [name, setName] = useState('');
+  const [gamePhase, setGamePhase] = useState('pre-flop'); // pre-flop, flop, turn, river
 
   useEffect(() => {
     if(containerRef && containerRef.current){
@@ -85,6 +87,46 @@ const App = () => {
     }
   }
 
+  const addRandomUsers = (count) => {
+    const randomNames = [
+      'Alice', 'Bob', 'Charlie', 'Diana', 'Eve', 'Frank', 'Grace', 'Henry',
+      'Ivy', 'Jack', 'Kate', 'Leo', 'Maya', 'Noah', 'Olivia', 'Peter',
+      'Quinn', 'Ruby', 'Sam', 'Tina', 'Uma', 'Victor', 'Wendy', 'Xander', 'Yara', 'Zoe'
+    ];
+    
+    const newPlayers = [...players];
+    let added = 0;
+    
+    for (let i = 0; i < count && added < count; i++) {
+      // Try to find a name that doesn't exist
+      const availableNames = randomNames.filter(
+        randomName => !newPlayers.some(player => player.name === randomName)
+      );
+      
+      if (availableNames.length === 0) {
+        // If all predefined names are used, generate numbered names
+        let num = 1;
+        let generatedName;
+        do {
+          generatedName = `Player${num}`;
+          num++;
+        } while (newPlayers.some(player => player.name === generatedName));
+        
+        newPlayers.push({ name: generatedName, hand: [] });
+        added++;
+      } else {
+        // Pick a random name from available names
+        const randomIndex = Math.floor(Math.random() * availableNames.length);
+        const selectedName = availableNames[randomIndex];
+        newPlayers.push({ name: selectedName, hand: [] });
+        added++;
+      }
+    }
+    
+    setPlayers(newPlayers);
+    containerRef?.current?.scrollIntoView({ behavior: 'smooth' });
+  }
+
   const handleNameChange = (event) => {
     setName(event.target.value);
   };
@@ -111,7 +153,38 @@ const App = () => {
   const resetTable =() =>{
     setTable([]);
     setPlayers([]);
+    setGamePhase('pre-flop');
   }
+
+  const revealFlop = () => {
+    if (table.length >= 3 && players.length >= 2 && players.every(p => p.hand.length === 2)) {
+      setGamePhase('flop');
+    }
+  };
+
+  const revealTurn = () => {
+    if (table.length >= 4 && gamePhase === 'flop') {
+      setGamePhase('turn');
+    }
+  };
+
+  const revealRiver = () => {
+    if (table.length >= 5 && gamePhase === 'turn') {
+      setGamePhase('river');
+    }
+  };
+
+  const canRevealCards = () => {
+    return players.length >= 2 && players.every(p => p.hand.length === 2);
+  };
+
+  const getVisibleCommunityCards = () => {
+    if (gamePhase === 'pre-flop') return [];
+    if (gamePhase === 'flop') return table.slice(0, 3);
+    if (gamePhase === 'turn') return table.slice(0, 4);
+    if (gamePhase === 'river') return table.slice(0, 5);
+    return table;
+  };
 
   function shuffledCardsAndDeal() {
     const shuffled = [...availableCards()];
@@ -133,7 +206,7 @@ const App = () => {
     }
     setTable(tableCopy);
     setPlayers(playerCopy);
-    
+    setGamePhase('pre-flop');
   }
 
   return (
@@ -141,15 +214,16 @@ const App = () => {
       <Header />
       <CardsContainer cards={availableCards()} addCard={addCard} />
       <div className="table-containers">
-          <TableContainer
-            name="Table"
-            area="table"
+          <CommunityCardsDisplay
             cards={table}
-            className={'tableCards'}
             removeCard={removeCard}
             selected={selected}
             setSelected={setSelected}
-            limit={5}
+            gamePhase={gamePhase}
+            revealFlop={revealFlop}
+            revealTurn={revealTurn}
+            revealRiver={revealRiver}
+            canReveal={canRevealCards()}
           />
           <div className='players'>
         {players.map((player, index) =>
@@ -163,6 +237,9 @@ const App = () => {
               selected={selected}
               setSelected={setSelected}
               limit={2}
+              communityCards={getVisibleCommunityCards()}
+              totalPlayers={players.length}
+              showWinRate={true}
             />
           )}
          </div>
@@ -174,27 +251,46 @@ const App = () => {
           isEnabled={validateSelection()}
         />
         <div className='utlities'  ref={containerRef}>
-        User Name:
-        <input type="text" value={name} onChange={handleNameChange} data-testid={'userNameInput'} />
-          <button
-          className={`addUserButton`}
-          onClick={() => {addUser()}}
-          data-testid={'addUserButtonTest'}
-          >
-            {`Add User`}
-          </button>
-          <button
-          className={`resetTable`}
-          onClick={() => {resetTable()}}
-          >
-            {`Reset Table`}
-          </button>
-          <button
-          className={`dealCard`}
-          onClick={() => {shuffledCardsAndDeal()}}
-          >
-            {`Auto Deal`}
-          </button>
+          <div style={{ marginBottom: '1rem' }}>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', fontSize: '1.1rem' }}>
+              👤 Add Player
+            </label>
+            <input 
+              type="text" 
+              value={name} 
+              onChange={handleNameChange} 
+              data-testid={'userNameInput'} 
+              placeholder="Enter player name..."
+            />
+          </div>
+          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+            <button
+              className={`addUserButton`}
+              onClick={() => {addUser()}}
+              data-testid={'addUserButtonTest'}
+            >
+              ➕ Add User
+            </button>
+            <button
+              onClick={() => {addRandomUsers(3)}}
+              style={{ background: 'linear-gradient(135deg, rgba(138, 43, 226, 0.3), rgba(75, 0, 130, 0.3))' }}
+            >
+              🎲 Add 3 Random Users
+            </button>
+            <button
+              className={`dealCard`}
+              onClick={() => {shuffledCardsAndDeal()}}
+              disabled={players.length < 2}
+            >
+              🎴 Auto Deal
+            </button>
+            <button
+              className={`resetTable`}
+              onClick={() => {resetTable()}}
+            >
+              🔄 Reset Table
+            </button>
+          </div>
         </div>
       <Footer/>
       </div>
